@@ -30,14 +30,11 @@ class AuthHandler(http.server.SimpleHTTPRequestHandler):
         if self.headers.get('Authorization') is None:
             self.do_AUTHHEAD()
             self.wfile.write('Credentials required.'.encode('utf-8'))
-            pass
         elif self.headers.get('Authorization') == 'Basic ' + key.decode('utf-8'):
             http.server.SimpleHTTPRequestHandler.do_GET(self)
-            pass
         else:
             self.do_AUTHHEAD()
             self.wfile.write('Credentials required.'.encode('utf-8'))
-            pass
 
 '''
 This function is used to simulate the manipulation of the stack (like pushd and popd in BASH)
@@ -63,8 +60,8 @@ if __name__ == '__main__':
     with open(install_folder + config_file, 'r') as config_stream:
         configuration = yaml.safe_load(config_stream)
 
-        if os.path.isfile(source_folder + '/' + config_file):
-            with open(source_folder + '/' + config_file, "r") as custom_stream:
+        if os.path.isfile(f'{source_folder}/{config_file}'):
+            with open(f'{source_folder}/{config_file}', "r") as custom_stream:
                 configuration.update(yaml.safe_load(custom_stream))
 
     if not os.path.exists(build_folder):
@@ -72,9 +69,9 @@ if __name__ == '__main__':
 
     if configuration.get('autobuild'):
 
-        ignored_files = []
-        for path in configuration.get('ignore'):
-            ignored_files.append(os.path.realpath(path))
+        ignored_files = [
+            os.path.realpath(path) for path in configuration.get('ignore')
+        ]
 
         builder = sphinx_autobuild.SphinxBuilder(
             outdir=build_folder,
